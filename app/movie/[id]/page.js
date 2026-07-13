@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getMovieDetails } from "@/lib/tmdb";
+import TrailerButton from "@/components/TrailerButton";
 
 const IMG_BASE = "https://image.tmdb.org/t/p/w500";
 const BACKDROP_BASE = "https://image.tmdb.org/t/p/original";
@@ -51,16 +52,7 @@ export default async function MovieDetailPage({ params }) {
                             <span className="text-[#B3B3B3]">{movie.runtime} min</span>
                         </div>
 
-                        {trailer && (
-                            <a
-                                href={`https://www.youtube.com/watch?v=${trailer.key}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 mt-6 px-6 py-2.5 rounded-md bg-white hover:bg-white/80 text-black text-sm font-semibold transition-colors"
-                            >
-                                ▶ Play Trailer
-                            </a>
-                        )}
+                        <TrailerButton trailerKey={trailer?.key} />
                     </div>
                 </div>
             )}
