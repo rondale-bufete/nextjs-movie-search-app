@@ -5,6 +5,7 @@ const BASE_URL = "https://api.themoviedb.org/3";
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("query");
+    const page = searchParams.get("page") || "1";
 
     if (!query || query.trim() === "") {
         return NextResponse.json({ error: "Query is required" }, { status: 400 });
@@ -12,7 +13,7 @@ export async function GET(request) {
 
     try {
         const res = await fetch(
-            `${BASE_URL}/search/movie?query=${encodeURIComponent(query)}&include_adult=false`,
+            `${BASE_URL}/search/movie?query=${encodeURIComponent(query)}&page=${page}&include_adult=false`,
             {
                 headers: {
                     Authorization: `Bearer ${process.env.TMDB_READ_ACCESS_TOKEN}`,
@@ -29,11 +30,12 @@ export async function GET(request) {
         }
 
         const data = await res.json();
-        return NextResponse.json({ results: data.results });
+        return NextResponse.json({
+            results: data.results,
+            totalPages: data.total_pages,
+            page: data.page,
+        });
     } catch (err) {
-        return NextResponse.json(
-            { error: "Failed to reach TMDB." },
-            { status: 500 }
-        );
+        return NextResponse.json({ error: "Failed to reach TMDB." }, { status: 500 });
     }
 }

@@ -19,6 +19,9 @@ export default async function MovieDetailPage({ params }) {
     const year = movie.release_date ? movie.release_date.slice(0, 4) : "N/A";
     const director = movie.credits?.crew?.find((person) => person.job === "Director");
     const topCast = movie.credits?.cast?.slice(0, 6) || [];
+    const trailer = movie.videos?.results?.find(
+        (v) => v.site === "YouTube" && v.type === "Trailer"
+    ) || movie.videos?.results?.find((v) => v.site === "YouTube");
 
     return (
         <main className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
@@ -65,6 +68,16 @@ export default async function MovieDetailPage({ params }) {
                             <span className="text-lg font-semibold">⭐ {movie.vote_average?.toFixed(1)}</span>
                             <span className="text-sm text-gray-500">{movie.runtime} min</span>
                         </div>
+                        {trailer && (
+                            <a
+                                href={`https://www.youtube.com/watch?v=${trailer.key}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block mt-3 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors"
+                            >
+                                ▶ Watch Trailer
+                            </a>
+                        )}
 
                         <div className="flex flex-wrap gap-2 mt-3">
                             {movie.genres?.map((genre) => (
@@ -109,6 +122,6 @@ export default async function MovieDetailPage({ params }) {
                     </div>
                 )}
             </div>
-        </main>
+        </main >
     );
 }

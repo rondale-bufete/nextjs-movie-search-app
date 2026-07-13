@@ -1,18 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function SearchBar({ onSearch, loading }) {
     const [input, setInput] = useState("");
+    const isFirstRender = useRef(true);
+
+    useEffect(() => {
+        // Skip firing a search on the very first render (empty input)
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+
+        if (input.trim() === "") return;
+
+        const timeoutId = setTimeout(() => {
+            onSearch(input.trim());
+        }, 400);
+
+        // Cleanup: cancels the pending search if the user types again before 400ms passes
+        return () => clearTimeout(timeoutId);
+    }, [input, onSearch]);
 
     function handleSubmit(e) {
         e.preventDefault();
         if (input.trim() === "") return;
-        onSearch(input.trim());
+        onSearch(input.trim()); // immediate search on Enter/click, bypassing debounce
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex gap-2 mb-8">
+        <form onSubmit={handleSubmit} className="flex gap-2 mb-6">
             <input
                 type="text"
                 value={input}
