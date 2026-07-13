@@ -126,7 +126,7 @@ export default function HeroCarousel({ movies }) {
                         key={m.id}
                         onClick={() => setCurrentIndex(i)}
                         aria-label={`Go to slide ${i + 1}`}
-                        className="w-8 h-1 rounded-full bg-white/25 overflow-hidden"
+                        className="w-8 h-1 rounded-full bg-white/25 overflow-hidden cursor-pointer"
                     >
                         {i < currentIndex && <div className="h-full bg-white w-full" />}
                         {i === currentIndex && (
