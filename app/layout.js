@@ -1,4 +1,5 @@
 import { Bebas_Neue, Inter } from "next/font/google";
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
@@ -21,14 +22,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${bebasNeue.variable} ${inter.variable}`}>
       <body className="bg-[#141414] text-white font-[family-name:var(--font-body)] min-h-screen">
-        <header className="bg-black px-8 py-4 flex items-center">
-          <a
-            href="/"
-            className="text-[#E50914] text-3xl tracking-wide font-[family-name:var(--font-display)]"
-          >
-            MOVIE SEARCH
-          </a>
-        </header>
+        <Navbar />
         {children}
       </body>
     </html>
