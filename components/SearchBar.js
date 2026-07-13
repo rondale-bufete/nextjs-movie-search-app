@@ -7,26 +7,20 @@ export default function SearchBar({ onSearch, loading }) {
     const isFirstRender = useRef(true);
 
     useEffect(() => {
-        // Skip firing a search on the very first render (empty input)
         if (isFirstRender.current) {
             isFirstRender.current = false;
             return;
         }
-
         if (input.trim() === "") return;
 
-        const timeoutId = setTimeout(() => {
-            onSearch(input.trim());
-        }, 400);
-
-        // Cleanup: cancels the pending search if the user types again before 400ms passes
+        const timeoutId = setTimeout(() => onSearch(input.trim()), 400);
         return () => clearTimeout(timeoutId);
     }, [input, onSearch]);
 
     function handleSubmit(e) {
         e.preventDefault();
         if (input.trim() === "") return;
-        onSearch(input.trim()); // immediate search on Enter/click, bypassing debounce
+        onSearch(input.trim());
     }
 
     return (
@@ -35,15 +29,15 @@ export default function SearchBar({ onSearch, loading }) {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Search for a movie..."
-                className="flex-1 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-blue-500"
+                placeholder="Titles, people, genres"
+                className="flex-1 px-4 py-3 rounded-md bg-[#2F2F2F] text-white placeholder-[#8C8C8C] border border-transparent focus:outline-none focus:border-white transition-colors"
             />
             <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-white"
+                className="px-6 py-3 rounded-md bg-[#E50914] hover:bg-[#f6121d] disabled:opacity-50 disabled:cursor-not-allowed font-medium text-white transition-colors"
             >
-                {loading ? "Searching..." : "Search"}
+                {loading ? "..." : "Search"}
             </button>
         </form>
     );

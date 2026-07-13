@@ -2,12 +2,12 @@ export default function GenreFilter({ genres, selectedGenre, onSelect }) {
     if (genres.length === 0) return null;
 
     return (
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-8">
             <button
                 onClick={() => onSelect(null)}
-                className={`text-xs px-3 py-1.5 rounded-full transition-colors ${selectedGenre === null
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                className={`text-xs px-4 py-1.5 rounded-full border transition-colors ${selectedGenre === null
+                        ? "bg-white text-black border-white"
+                        : "border-[#808080] text-[#B3B3B3] hover:border-white hover:text-white"
                     }`}
             >
                 All
@@ -16,9 +16,9 @@ export default function GenreFilter({ genres, selectedGenre, onSelect }) {
                 <button
                     key={genre.id}
                     onClick={() => onSelect(genre.id)}
-                    className={`text-xs px-3 py-1.5 rounded-full transition-colors ${selectedGenre === genre.id
-                            ? "bg-blue-600 text-white"
-                            : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    className={`text-xs px-4 py-1.5 rounded-full border transition-colors ${selectedGenre === genre.id
+                            ? "bg-white text-black border-white"
+                            : "border-[#808080] text-[#B3B3B3] hover:border-white hover:text-white"
                         }`}
                 >
                     {genre.name}

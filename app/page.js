@@ -20,7 +20,6 @@ export default function Home() {
   const [genres, setGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState(null);
 
-  // Fetch the genre list once, on mount
   useEffect(() => {
     getGenres().then(setGenres).catch(() => { });
   }, []);
@@ -47,7 +46,6 @@ export default function Home() {
   async function handleLoadMore() {
     const nextPage = page + 1;
     setLoadingMore(true);
-
     try {
       const data = await searchMovies(currentQuery, nextPage);
       setMovies((prev) => [...prev, ...data.results]);
@@ -59,7 +57,6 @@ export default function Home() {
     }
   }
 
-  // Derived state: filter movies by selected genre, without storing a separate copy
   const filteredMovies = useMemo(() => {
     if (selectedGenre === null) return movies;
     return movies.filter((movie) => movie.genre_ids?.includes(selectedGenre));
@@ -68,24 +65,29 @@ export default function Home() {
   const hasMore = page < totalPages;
 
   return (
-    <main className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white p-8 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Movie Search</h1>
+    <main className="px-8 py-8 max-w-7xl mx-auto">
+      {!searched && (
+        <div className="text-center mt-24">
+          <h1 className="font-[family-name:var(--font-display)] text-6xl md:text-7xl tracking-wide mb-4">
+            Find your next watch
+          </h1>
+          <p className="text-[#B3B3B3] mb-8">
+            Search thousands of movies, right where you are.
+          </p>
+        </div>
+      )}
 
-      <SearchBar onSearch={handleSearch} loading={loading} />
+      <div className="max-w-2xl mx-auto">
+        <SearchBar onSearch={handleSearch} loading={loading} />
+      </div>
 
       {searched && !error && (
         <GenreFilter genres={genres} selectedGenre={selectedGenre} onSelect={setSelectedGenre} />
       )}
 
       {error && (
-        <p className="text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-lg px-4 py-3 mb-6">
+        <p className="text-white bg-[#E50914]/20 border border-[#E50914] rounded-md px-4 py-3 mb-6 max-w-2xl mx-auto">
           {error}
-        </p>
-      )}
-
-      {!searched && !error && (
-        <p className="text-gray-500 text-center mt-16">
-          Search for a movie to get started.
         </p>
       )}
 
@@ -97,7 +99,7 @@ export default function Home() {
             <button
               onClick={handleLoadMore}
               disabled={loadingMore}
-              className="mt-6 w-full text-sm py-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50"
+              className="mt-8 mx-auto block px-6 py-2.5 rounded-md bg-[#2F2F2F] hover:bg-[#404040] text-white text-sm font-medium transition-colors disabled:opacity-50"
             >
               {loadingMore ? "Loading..." : "Load more"}
             </button>

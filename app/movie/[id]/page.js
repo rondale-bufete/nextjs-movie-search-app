@@ -17,16 +17,17 @@ export default async function MovieDetailPage({ params }) {
     }
 
     const year = movie.release_date ? movie.release_date.slice(0, 4) : "N/A";
-    const director = movie.credits?.crew?.find((person) => person.job === "Director");
+    const director = movie.credits?.crew?.find((p) => p.job === "Director");
     const topCast = movie.credits?.cast?.slice(0, 6) || [];
-    const trailer = movie.videos?.results?.find(
-        (v) => v.site === "YouTube" && v.type === "Trailer"
-    ) || movie.videos?.results?.find((v) => v.site === "YouTube");
+    const trailer =
+        movie.videos?.results?.find((v) => v.site === "YouTube" && v.type === "Trailer") ||
+        movie.videos?.results?.find((v) => v.site === "YouTube");
+    const matchScore = Math.round((movie.vote_average || 0) * 10);
 
     return (
-        <main className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
+        <main>
             {movie.backdrop_path && (
-                <div className="relative w-full h-64 md:h-96">
+                <div className="relative w-full h-[70vh]">
                     <Image
                         src={`${BACKDROP_BASE}${movie.backdrop_path}`}
                         alt={movie.title}
@@ -34,75 +35,73 @@ export default async function MovieDetailPage({ params }) {
                         className="object-cover"
                         priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-gray-950 via-transparent to-transparent" />
-                </div>
-            )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#141414]/80 via-transparent to-transparent" />
 
-            <div className="max-w-4xl mx-auto p-8 -mt-24 relative">
-                <Link
-                    href="/"
-                    className="inline-block mb-6 text-sm text-blue-600 dark:text-blue-400 hover:underline"
-                >
-                    ← Back to search
-                </Link>
-
-                <div className="flex flex-col md:flex-row gap-6">
-                    {movie.poster_path && (
-                        <div className="relative w-48 aspect-[2/3] rounded-xl overflow-hidden shrink-0 shadow-lg">
-                            <Image
-                                src={`${IMG_BASE}${movie.poster_path}`}
-                                alt={movie.title}
-                                fill
-                                className="object-cover"
-                            />
+                    <div className="absolute bottom-0 left-0 p-8 md:p-16 max-w-2xl">
+                        <Link href="/" className="inline-block mb-4 text-sm text-[#B3B3B3] hover:text-white">
+                            ← Back to search
+                        </Link>
+                        <h1 className="font-[family-name:var(--font-display)] text-5xl md:text-7xl tracking-wide leading-none">
+                            {movie.title}
+                        </h1>
+                        <div className="flex items-center gap-3 mt-4 text-sm">
+                            <span className="text-[#46D369] font-semibold">{matchScore}% match</span>
+                            <span className="text-[#B3B3B3]">{year}</span>
+                            <span className="text-[#B3B3B3]">{movie.runtime} min</span>
                         </div>
-                    )}
 
-                    <div>
-                        <h1 className="text-3xl font-bold">{movie.title}</h1>
-                        <p className="text-gray-500 mt-1">
-                            {year} {director && `• Directed by ${director.name}`}
-                        </p>
-
-                        <div className="flex items-center gap-4 mt-3">
-                            <span className="text-lg font-semibold">⭐ {movie.vote_average?.toFixed(1)}</span>
-                            <span className="text-sm text-gray-500">{movie.runtime} min</span>
-                        </div>
                         {trailer && (
                             <a
                                 href={`https://www.youtube.com/watch?v=${trailer.key}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-block mt-3 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors"
+                                className="inline-flex items-center gap-2 mt-6 px-6 py-2.5 rounded-md bg-white hover:bg-white/80 text-black text-sm font-semibold transition-colors"
                             >
-                                ▶ Watch Trailer
+                                ▶ Play Trailer
                             </a>
                         )}
+                    </div>
+                </div>
+            )}
 
-                        <div className="flex flex-wrap gap-2 mt-3">
+            <div className="max-w-4xl mx-auto p-8">
+                <div className="flex flex-col md:flex-row gap-6">
+                    {movie.poster_path && (
+                        <div className="relative w-40 aspect-[2/3] rounded-md overflow-hidden shrink-0 shadow-xl -mt-24 hidden md:block">
+                            <Image src={`${IMG_BASE}${movie.poster_path}`} alt={movie.title} fill className="object-cover" />
+                        </div>
+                    )}
+
+                    <div>
+                        {director && (
+                            <p className="text-[#B3B3B3] text-sm mb-3">
+                                <span className="text-white">Director:</span> {director.name}
+                            </p>
+                        )}
+
+                        <div className="flex flex-wrap gap-2 mb-4">
                             {movie.genres?.map((genre) => (
                                 <span
                                     key={genre.id}
-                                    className="text-xs px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                                    className="text-xs px-3 py-1 rounded-full border border-[#808080] text-[#B3B3B3]"
                                 >
                                     {genre.name}
                                 </span>
                             ))}
                         </div>
 
-                        <p className="mt-4 text-gray-700 dark:text-gray-300 leading-relaxed">
-                            {movie.overview}
-                        </p>
+                        <p className="text-[#D2D2D2] leading-relaxed">{movie.overview}</p>
                     </div>
                 </div>
 
                 {topCast.length > 0 && (
                     <div className="mt-10">
-                        <h2 className="text-xl font-semibold mb-4">Top Cast</h2>
+                        <h2 className="font-[family-name:var(--font-display)] text-2xl tracking-wide mb-4">Cast</h2>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                             {topCast.map((actor) => (
                                 <div key={actor.id} className="flex items-center gap-3">
-                                    <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-800 shrink-0">
+                                    <div className="relative w-12 h-12 rounded-full overflow-hidden bg-[#2F2F2F] shrink-0">
                                         {actor.profile_path && (
                                             <Image
                                                 src={`https://image.tmdb.org/t/p/w92${actor.profile_path}`}
@@ -114,7 +113,7 @@ export default async function MovieDetailPage({ params }) {
                                     </div>
                                     <div>
                                         <p className="text-sm font-medium">{actor.name}</p>
-                                        <p className="text-xs text-gray-500">{actor.character}</p>
+                                        <p className="text-xs text-[#8C8C8C]">{actor.character}</p>
                                     </div>
                                 </div>
                             ))}
@@ -122,6 +121,6 @@ export default async function MovieDetailPage({ params }) {
                     </div>
                 )}
             </div>
-        </main >
+        </main>
     );
 }
