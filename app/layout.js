@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
             href="/"
             className="text-[#E50914] text-3xl tracking-wide font-[family-name:var(--font-display)]"
           >
-            REEL SEARCH
+            MOVIE SEARCH
           </a>
         </header>
         {children}

@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import SearchBar from "@/components/SearchBar";
 import MovieGrid from "@/components/MovieGrid";
 import GenreFilter from "@/components/GenreFilter";
+import HeroCarousel from "@/components/HeroCarousel";
 import { searchMovies, getGenres, getPopularMovies, getNowPlayingMovies } from "@/lib/tmdb";
 
 export default function Home() {
@@ -27,10 +28,18 @@ export default function Home() {
   const [browseTotalPages, setBrowseTotalPages] = useState(1);
   const [browseLoadingMore, setBrowseLoadingMore] = useState(false);
 
+  const [heroMovies, setHeroMovies] = useState([]);
+
   const sentinelRef = useRef(null);
 
   useEffect(() => {
     getGenres().then(setGenres).catch(() => { });
+  }, []);
+
+  useEffect(() => {
+    getPopularMovies(1)
+      .then((data) => setHeroMovies(data.results.slice(0, 5)))
+      .catch(() => { });
   }, []);
 
   // Reset and fetch page 1 whenever the browse toggle changes
@@ -130,16 +139,7 @@ export default function Home() {
 
   return (
     <main className="px-8 py-8 max-w-7xl mx-auto">
-      {!searched && (
-        <div className="text-center mt-16 mb-10">
-          <h1 className="font-[family-name:var(--font-display)] text-6xl md:text-7xl tracking-wide mb-4">
-            Find your next watch
-          </h1>
-          <p className="text-[#B3B3B3] mb-8">
-            Search thousands of movies, right where you are.
-          </p>
-        </div>
-      )}
+      {!searched && heroMovies.length > 0 && <HeroCarousel movies={heroMovies} />}
 
       <div className="max-w-2xl mx-auto">
         <SearchBar onSearch={handleSearch} loading={loading} />
@@ -181,8 +181,8 @@ export default function Home() {
               <button
                 onClick={() => setBrowseType("popular")}
                 className={`text-xs px-4 py-1.5 rounded-full border transition-colors ${browseType === "popular"
-                    ? "bg-white text-black border-white"
-                    : "border-[#808080] text-[#B3B3B3] hover:border-white hover:text-white"
+                  ? "bg-white text-black border-white"
+                  : "border-[#808080] text-[#B3B3B3] hover:border-white hover:text-white"
                   }`}
               >
                 Popular
@@ -190,8 +190,8 @@ export default function Home() {
               <button
                 onClick={() => setBrowseType("latest")}
                 className={`text-xs px-4 py-1.5 rounded-full border transition-colors ${browseType === "latest"
-                    ? "bg-white text-black border-white"
-                    : "border-[#808080] text-[#B3B3B3] hover:border-white hover:text-white"
+                  ? "bg-white text-black border-white"
+                  : "border-[#808080] text-[#B3B3B3] hover:border-white hover:text-white"
                   }`}
               >
                 Latest
