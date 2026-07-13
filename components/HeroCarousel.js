@@ -91,7 +91,7 @@ export default function HeroCarousel({ movies }) {
 
                 <div className="flex items-center gap-3 mb-4 text-sm">
                     <span className="text-[#46D369] font-semibold">
-                        {Math.round((movie.vote_average || 0) * 10)}% match
+                        {Math.round((movie.vote_average || 0) * 10)}% Rating
                     </span>
                     <span className="text-[#B3B3B3]">
                         {movie.release_date ? movie.release_date.slice(0, 4) : "N/A"}

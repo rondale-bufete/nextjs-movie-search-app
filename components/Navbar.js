@@ -27,7 +27,7 @@ export default function Navbar() {
                 href="/"
                 className="text-[#E50914] text-3xl tracking-wide font-[family-name:var(--font-display)]"
             >
-                MOVIE SEARCH
+                SEARCHFLIX
             </Link>
         </header>
     );

@@ -116,3 +116,59 @@ body {
 .animate-progress.paused {
 	animation-play-state: paused;
 }
+
+html,
+body {
+	overflow-x: hidden;
+}
+
+.scrollbar-hide {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+	display: none;
+}
+
+@keyframes kenburns {
+	0% {
+		transform: scale(1);
+	}
+	100% {
+		transform: scale(1.08);
+	}
+}
+
+@keyframes fadeInUp {
+	0% {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes progressFill {
+	0% {
+		width: 0%;
+	}
+	100% {
+		width: 100%;
+	}
+}
+
+.animate-kenburns {
+	animation: kenburns 6.5s ease-out forwards;
+}
+.animate-fade-in-up {
+	animation: fadeInUp 0.6s ease-out forwards;
+}
+.animate-progress {
+	animation: progressFill 6s linear forwards;
+}
+.animate-progress.paused {
+	animation-play-state: paused;
+}

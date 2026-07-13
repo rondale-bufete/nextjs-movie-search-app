@@ -3,9 +3,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getMovieDetails } from "@/lib/tmdb";
 import TrailerButton from "@/components/TrailerButton";
+import CastList from "@/components/CastList";
+import ProductionCompanies from "@/components/ProductionCompanies";
+import WatchProviders from "@/components/WatchProviders";
+import MovieGrid from "@/components/MovieGrid";
 
 const IMG_BASE = "https://image.tmdb.org/t/p/w500";
 const BACKDROP_BASE = "https://image.tmdb.org/t/p/original";
+
+function formatCurrency(amount) {
+    if (!amount || amount === 0) return null;
+    if (amount >= 1_000_000_000) return `$${(amount / 1_000_000_000).toFixed(1)}B`;
+    if (amount >= 1_000_000) return `$${(amount / 1_000_000).toFixed(1)}M`;
+    return `$${amount.toLocaleString()}`;
+}
 
 export default async function MovieDetailPage({ params }) {
     const { id } = await params;
@@ -19,11 +30,14 @@ export default async function MovieDetailPage({ params }) {
 
     const year = movie.release_date ? movie.release_date.slice(0, 4) : "N/A";
     const director = movie.credits?.crew?.find((p) => p.job === "Director");
-    const topCast = movie.credits?.cast?.slice(0, 6) || [];
+    const topCast = movie.credits?.cast?.slice(0, 15) || [];
     const trailer =
         movie.videos?.results?.find((v) => v.site === "YouTube" && v.type === "Trailer") ||
         movie.videos?.results?.find((v) => v.site === "YouTube");
-    const matchScore = Math.round((movie.vote_average || 0) * 10);
+    const recommendations = movie.recommendations?.results?.slice(0, 10) || [];
+
+    const budget = formatCurrency(movie.budget);
+    const revenue = formatCurrency(movie.revenue);
 
     return (
         <main>
@@ -46,10 +60,24 @@ export default async function MovieDetailPage({ params }) {
                         <h1 className="font-[family-name:var(--font-display)] text-5xl md:text-7xl tracking-wide leading-none">
                             {movie.title}
                         </h1>
-                        <div className="flex items-center gap-3 mt-4 text-sm">
-                            <span className="text-[#46D369] font-semibold">{matchScore}% match</span>
+
+                        {movie.tagline && (
+                            <p className="text-[#B3B3B3] italic mt-2 text-sm md:text-base">
+                                &ldquo;{movie.tagline}&rdquo;
+                            </p>
+                        )}
+
+                        <div className="flex items-center gap-3 mt-4 text-sm flex-wrap">
+                            <span className="text-[#46D369] font-semibold">
+                                ★ {movie.vote_average?.toFixed(1)} Rating
+                            </span>
                             <span className="text-[#B3B3B3]">{year}</span>
                             <span className="text-[#B3B3B3]">{movie.runtime} min</span>
+                            {movie.status && movie.status !== "Released" && (
+                                <span className="text-xs px-2 py-0.5 rounded border border-[#E50914] text-[#E50914]">
+                                    {movie.status}
+                                </span>
+                            )}
                         </div>
 
                         <TrailerButton trailerKey={trailer?.key} />
@@ -61,7 +89,12 @@ export default async function MovieDetailPage({ params }) {
                 <div className="flex flex-col md:flex-row gap-6">
                     {movie.poster_path && (
                         <div className="relative w-40 aspect-[2/3] rounded-md overflow-hidden shrink-0 shadow-xl -mt-24 hidden md:block">
-                            <Image src={`${IMG_BASE}${movie.poster_path}`} alt={movie.title} fill className="object-cover" />
+                            <Image
+                                src={`${IMG_BASE}${movie.poster_path}`}
+                                alt={movie.title}
+                                fill
+                                className="object-cover"
+                            />
                         </div>
                     )}
 
@@ -84,32 +117,36 @@ export default async function MovieDetailPage({ params }) {
                         </div>
 
                         <p className="text-[#D2D2D2] leading-relaxed">{movie.overview}</p>
+
+                        {(budget || revenue) && (
+                            <div className="flex gap-8 mt-5 text-sm">
+                                {budget && (
+                                    <div>
+                                        <p className="text-[#6D6D6D] text-xs uppercase tracking-wide">Budget</p>
+                                        <p className="font-semibold mt-0.5">{budget}</p>
+                                    </div>
+                                )}
+                                {revenue && (
+                                    <div>
+                                        <p className="text-[#6D6D6D] text-xs uppercase tracking-wide">Box Office</p>
+                                        <p className="font-semibold mt-0.5">{revenue}</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
 
-                {topCast.length > 0 && (
+                <CastList cast={topCast} />
+                <WatchProviders providers={movie["watch/providers"]?.results} />
+                <ProductionCompanies companies={movie.production_companies} />
+
+                {recommendations.length > 0 && (
                     <div className="mt-10">
-                        <h2 className="font-[family-name:var(--font-display)] text-2xl tracking-wide mb-4">Cast</h2>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            {topCast.map((actor) => (
-                                <div key={actor.id} className="flex items-center gap-3">
-                                    <div className="relative w-12 h-12 rounded-full overflow-hidden bg-[#2F2F2F] shrink-0">
-                                        {actor.profile_path && (
-                                            <Image
-                                                src={`https://image.tmdb.org/t/p/w92${actor.profile_path}`}
-                                                alt={actor.name}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        )}
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-medium">{actor.name}</p>
-                                        <p className="text-xs text-[#8C8C8C]">{actor.character}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        <h2 className="font-[family-name:var(--font-display)] text-2xl tracking-wide mb-4">
+                            More Like This
+                        </h2>
+                        <MovieGrid movies={recommendations} />
                     </div>
                 )}
             </div>
