@@ -43,7 +43,7 @@ export default function HeroCarousel({ movies }) {
 
     return (
         <div
-            className="relative w-screen left-1/2 -translate-x-1/2 h-[65vh] md:h-[80vh] mb-8 overflow-hidden"
+            className="relative w-screen left-1/2 -translate-x-1/2 h-[65vh] md:h-[80vh] mb-8 overflow-hidden -mt-8"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >

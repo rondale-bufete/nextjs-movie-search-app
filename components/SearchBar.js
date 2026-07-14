@@ -30,12 +30,12 @@ export default function SearchBar({ onSearch, loading }) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Titles, people, genres"
-                className="flex-1 px-4 py-3 rounded-md bg-[#2F2F2F] text-white placeholder-[#8C8C8C] border border-transparent focus:outline-none focus:border-white transition-colors"
+                className="flex-1 px-3 md:px-4 py-2 md:py-3 text-sm md:text-base rounded-md bg-[#2F2F2F] text-white placeholder-[#8C8C8C] border border-transparent focus:outline-none focus:border-white transition-colors"
             />
             <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-3 rounded-md bg-[#E50914] hover:bg-[#f6121d] disabled:opacity-50 disabled:cursor-not-allowed font-medium text-white transition-colors"
+                className="px-3 md:px-6 py-2 md:py-3 text-sm md:text-base rounded-md bg-[#E50914] hover:bg-[#f6121d] disabled:opacity-50 disabled:cursor-not-allowed font-medium text-white transition-colors"
             >
                 {loading ? "..." : "Search"}
             </button>
